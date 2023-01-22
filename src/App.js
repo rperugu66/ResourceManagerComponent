@@ -8,11 +8,11 @@ function App() {
   return (
     <div>
       <Header />
-      <div class="Main">
-        <div class="LeftNavigation">
+      <div className="Main">
+        <div className="LeftNavigation">
           <LeftNavigation />
         </div>
-        <div class="RegistrationForm">
+        <div className="RegistrationForm">
           <RegistrationForm />
         </div>
       </div>

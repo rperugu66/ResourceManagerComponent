@@ -4,10 +4,8 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import { variables } from "./Variables";
 //import { Test } from "../src/Components/Test.js";
-
-//import axios from "axios";
-//import axios from "axios";
-//import { variables } from ".Variables.js";
+// import { Link } from "react-router-dom";
+// import { ListGroup, ListGroupItem, Button } from "reactstrap";
 
 function RegistrationForm() {
   const [show, setShow] = useState(false);
@@ -15,17 +13,42 @@ function RegistrationForm() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [post, setPost] = React.useState([]);
-  const listItems = post.map((element) => {
+  // useEffect(() => {
+  //   axios
+  //     .get(variables + "assign")
+  //     .then((response) => {
+  //       setPost(response.data);
+  //     })
+  //     .then((error) => error.data);
+  // });
+
+  const listItems = post.map((user) => {
     return (
-      <div>
-        {element.date}
-        {element.temperatureC}
-      </div>
+      <tr>
+        <td className="checkbox-block">
+          <div className="checkbox-item">
+            <input type="checkbox" />
+          </div>
+        </td>
+        <td>{user.id}</td>
+        <td>{user.resourceName}</td>
+        <td>{user.techTrack}</td>
+        <td>{user.startDate}</td>
+        <td>{user.endDate}</td>
+        <td>{user.manager}</td>
+        <td>{user.sme}</td>
+        <td>{user.smeStatus}</td>
+        <td>
+          <button className="btnEdit">Edit </button>
+          <span></span>
+          <button className="date-block">Delete</button>
+        </td>
+      </tr>
     );
   });
 
   React.useEffect(() => {
-    axios.get(variables.API_URL + "WeatherForecast").then((response) => {
+    axios.get(variables.API_URL + "Assign").then((response) => {
       setPost(response.data);
       console.log(response.data);
     });
@@ -34,23 +57,23 @@ function RegistrationForm() {
   return (
     <>
       <body>
-        <div class="wrapper">
-          <section class="container">
-            <div class="sub-heading">
+        <div className="wrapper">
+          <section className="container">
+            <div className="sub-heading">
               <h2>All Programs</h2>
               /*
-              <div class="newtaskpopup">
+              <div className="newtaskpopup">
                 <Button variant="primary" onClick={handleShow}>
                   NEW TASK
                 </Button>
               </div>
             </div>
-            <div class="table">
+            <div className="table">
               <table>
                 <thead>
                   <tr>
-                    <td class="checkbox-block">
-                      <div class="checkbox-item">
+                    <td className="checkbox-block">
+                      <div className="checkbox-item">
                         <input type="checkbox" />
                       </div>
                     </td>
@@ -65,54 +88,7 @@ function RegistrationForm() {
                     <td>Actions</td>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="checkbox-block">
-                      <div class="checkbox-item">
-                        <input type="checkbox" />
-                      </div>
-                    </td>
-                    <td>{listItems[1]}</td>
-
-                    <td>
-                      <button class="btnEdit">Edit </button>
-                      <span></span>
-                      <button class="date-block">Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="checkbox-block">
-                      <div class="checkbox-item">
-                        <input type="checkbox" />
-                      </div>
-                    </td>
-                    <td>
-                      <button class="btnEdit">Edit </button>
-                      <button class="date-block">Delete</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="checkbox-block">
-                      <div class="checkbox-item">
-                        <input type="checkbox" />
-                      </div>
-                    </td>
-                    <td>6748</td>
-                    <td>Rupesh Kumar</td>
-                    <td class="btnLink">
-                      <u>JAVA</u>
-                    </td>
-                    <td>13/01/23</td>
-                    <td>15/02/23</td>
-                    <td>Sarojini</td>
-                    <td>Vasudha</td>
-                    <td>Open</td>
-                    <td>
-                      <button class="btnEdit">Edit </button>
-                      <button class="date-block">Delete</button>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody>{listItems}</tbody>
               </table>
             </div>
           </section>
@@ -130,62 +106,65 @@ function RegistrationForm() {
         </Modal.Header>
         <Modal.Body>
           <div>
-            {/* <form class="g-3">
+            {/* <form className="g-3">
               <label>VAM ID</label>
               <br></br>
-              <input sn={10} type="text" class="formInputClass"></input>
+              <input sn={10} type="text" className="formInputclassName"></input>
               <br></br>
               <label>Name</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
               <br></br>
               <label>Tech Track</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
               <br></br>
               <label>Start Date</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
               <br></br>
               <label>End Date</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
               <br></br>
               <label>Manager</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
               <br></br>
               <label>SME</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
               <br></br>
               <label>Status</label>
               <br></br>
-              <input type="text" class="formInputClass"></input>
+              <input type="text" className="formInputclassName"></input>
             </form>  */}
             <form>
-              <div class="row">
-                <div class="col">
+              <div className="row">
+                <div className="col">
                   <label>VAM ID</label>
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     placeholder=""
                   ></input>
                 </div>
-                <div class="col">
+                <div className="col">
                   <label>Name</label>
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     placeholder="Last name"
                   ></input>
                 </div>
               </div>
-              <div class="row">
-                <div class="col">
+              <div className="row">
+                <div className="col">
                   <label>Tech Track</label>
-                  <select class="form-control" id="inlineFormCustomSelectPref">
+                  <select
+                    className="form-control"
+                    id="inlineFormCustomSelectPref"
+                  >
                     <option selected>----Select----</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -193,20 +172,20 @@ function RegistrationForm() {
                   </select>
                 </div>
               </div>
-              <div class="row">
-                <div class="col">
+              <div className="row">
+                <div className="col">
                   <label>Select Date</label>
                   <input
-                    class="form-control"
+                    className="form-control"
                     type="date"
                     name="dob"
                     placeholder="Date of Birth"
                   ></input>
                 </div>
-                <div class="col">
+                <div className="col">
                   <label>End Date</label>
                   <input
-                    class="form-control"
+                    className="form-control"
                     type="date"
                     name="dob"
                     placeholder="Date of Birth"

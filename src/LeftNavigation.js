@@ -3,20 +3,20 @@ import "./style.css";
 function LeftNavigation() {
   return (
     <body>
-      <div class="wrapper">
-        <section class="container">
-          <div class="sub-heading">
+      <div className="wrapper">
+        <section className="container">
+          <div className="sub-heading">
             <h2>My Task</h2>
           </div>
-          <div class="folderInfo" onClick={() => this.GetAllDocuments()}>
-            <span class="folder"></span>
-            <span class="folderName">All Programs</span>
+          <div className="folderInfo" onClick={() => this.GetAllDocuments()}>
+            <span className="folder"></span>
+            <span className="folderName">All Programs</span>
           </div>
-          <div class="folderInfo" onClick={() => this.GetAllDocuments()}>
-            <span class="folder"></span>
-            <span class="folderName">Today Programs</span>
+          <div className="folderInfo" onClick={() => this.GetAllDocuments()}>
+            <span className="folder"></span>
+            <span className="folderName">Today Programs</span>
           </div>
-          <div class="table"></div>
+          <div className="table"></div>
         </section>
       </div>
     </body>

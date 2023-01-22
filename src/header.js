@@ -3,44 +3,44 @@ import "./css/main.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 function Header() {
   return (
-    <nav class="bg-dark navbar-dark navbar">
-      <header class="vm-header d-flex">
-        <div class="logo">
+    <nav className="bg-dark navbar-dark navbar">
+      <header className="vm-header d-flex">
+        <div className="logo">
           <h1>Program Tracker</h1>
         </div>
-        <div class="Serchboxdiv">
-          <div class="form-outline">
+        <div className="Serchboxdiv">
+          <div className="form-outline">
             <input
               type="search"
               id="form1"
-              class="form-control"
+              className="form-control"
               placeholder=""
               aria-label="Search"
             />
           </div>
         </div>
 
-        <div class="itemField Notificationdiv image">
+        <div className="itemField Notificationdiv image">
           <img
-            class="imagedev"
+            className="imagedev"
             src={require("./assets/images/bell-img.png")}
             alt="test"
           />
           <a href="{{ url('/image/'.$image->id.'/delete') }}">
-            <button type="button" class="btnNotification"></button>
+            <button type="button" className="btnNotification"></button>
           </a>
         </div>
 
-        <div class="user-info-block">
-          <div class="user-avathar">
+        <div className="user-info-block">
+          <div className="user-avathar">
             <span>RK</span>
           </div>
-          <div class="user-info">
+          <div className="user-info">
             <span>Rupesh Kumar</span>
             <i
               data-icon-name="ChevronDownMed"
               aria-hidden="true"
-              class="ms-Icon root-43"
+              className="ms-Icon root-43"
             >
               
             </i>
