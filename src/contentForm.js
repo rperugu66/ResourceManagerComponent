@@ -9,28 +9,25 @@ import { variables } from "./Variables";
 
 function RegistrationForm() {
   const [show, setShow] = useState(false);
+  const intialState = {
+    vamid: 0,
+    techTrack: "",
+    resourceName: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    manager: "",
+    sme: "",
+  };
 
-  const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [post, setPost] = React.useState([]);
-  // useEffect(() => {
-  //   axios
-  //     .get(variables + "assign")
-  //     .then((response) => {
-  //       setPost(response.data);
-  //     })
-  //     .then((error) => error.data);
-  // });
+  const [form, setForm] = useState(intialState);
+  const [techTracks, setTechTracks] = useState([]);
 
   const listItems = post.map((user) => {
     return (
       <tr>
-        <td className="checkbox-block">
-          <div className="checkbox-item">
-            <input type="checkbox" />
-          </div>
-        </td>
-        <td>{user.id}</td>
+        <td>{user.vamid}</td>
         <td>{user.resourceName}</td>
         <td>{user.techTrack}</td>
         <td>{user.startDate}</td>
@@ -46,13 +43,82 @@ function RegistrationForm() {
       </tr>
     );
   });
-
-  React.useEffect(() => {
+  // To refresh data for Table
+  const GetResourceData = () => {
     axios.get(variables.API_URL + "Assign").then((response) => {
       setPost(response.data);
       console.log(response.data);
     });
+  };
+
+  const GetTechTrackers = () => {
+    //get Options for TechTrack
+    axios
+      .get(variables.API_URL + "ProgramTracker/GetTechTracks")
+      .then((response) => {
+        console.log("Tracks", response.data);
+        setTechTracks(response.data);
+      })
+      .then((json) => {
+        console.log("Data Tracks", json);
+        //setTechTracks((data) => setTechTracks(data));
+      });
+  };
+
+  // Component did Mount
+  React.useEffect(() => {
+    GetResourceData();
+    GetTechTrackers();
   }, []);
+
+  // Handler to Update State of Form Control
+  const handleChange = (evt) => {
+    const name = evt.target.name;
+    const value =
+      evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  // Refresh Data
+  // React.useEffect(() => {
+  //   GetResourceData();
+  // });
+
+  // Submit Handler
+  const handleSubmit = () => {
+    //alert(form);
+    console.log(form);
+    // Send Data to Our Api
+    CreateResource();
+  };
+
+  const handleClose = () => {
+    setForm(intialState);
+    setShow(false);
+  };
+
+  const CreateResource = (resource) => {
+    console.log("Create Resource Method Callled");
+    axios
+      .post(variables.API_URL + "Assign", form, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        // Refresh Data After Submit
+        GetResourceData();
+        //Close Model
+        handleClose();
+      })
+      .then((error) => console.log("Post Error", error));
+  };
+  // React.useEffect(() => {
+  //   console.log("form data updated", form);
+  // }, [form]);
 
   return (
     <>
@@ -61,7 +127,7 @@ function RegistrationForm() {
           <section className="container">
             <div className="sub-heading">
               <h2>All Programs</h2>
-              /*
+
               <div className="newtaskpopup">
                 <Button variant="primary" onClick={handleShow}>
                   NEW TASK
@@ -72,11 +138,6 @@ function RegistrationForm() {
               <table>
                 <thead>
                   <tr>
-                    <td className="checkbox-block">
-                      <div className="checkbox-item">
-                        <input type="checkbox" />
-                      </div>
-                    </td>
                     <td>VAM ID</td>
                     <td>Resource Name</td>
                     <td>Tech Track</td>
@@ -106,39 +167,6 @@ function RegistrationForm() {
         </Modal.Header>
         <Modal.Body>
           <div>
-            {/* <form className="g-3">
-              <label>VAM ID</label>
-              <br></br>
-              <input sn={10} type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>Name</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>Tech Track</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>Start Date</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>End Date</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>Manager</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>SME</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-              <br></br>
-              <label>Status</label>
-              <br></br>
-              <input type="text" className="formInputclassName"></input>
-            </form>  */}
             <form>
               <div className="row">
                 <div className="col">
@@ -147,29 +175,45 @@ function RegistrationForm() {
                     type="text"
                     className="form-control"
                     placeholder=""
+                    name="vamid"
+                    value={form.vamid}
+                    onChange={handleChange}
                   ></input>
                 </div>
+                <div className="col">
+                  <div className="col">
+                    <label>Tech Track</label>
+                    <select
+                      className="form-control"
+                      id="inlineFormCustomSelectPref"
+                      name="techTrack"
+                      value={form.techTrack}
+                      onChange={handleChange}
+                      //defaultValue="----Select----"
+                      // options={getTechTracksLists}
+                    >
+                      {techTracks.map((e, key) => {
+                        return (
+                          <option key={key} value={e}>
+                            {e}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
                 <div className="col">
                   <label>Name</label>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Last name"
+                    name="resourceName"
+                    value={form.resourceName}
+                    onChange={handleChange}
                   ></input>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col">
-                  <label>Tech Track</label>
-                  <select
-                    className="form-control"
-                    id="inlineFormCustomSelectPref"
-                  >
-                    <option selected>----Select----</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
                 </div>
               </div>
               <div className="row">
@@ -178,8 +222,10 @@ function RegistrationForm() {
                   <input
                     className="form-control"
                     type="date"
-                    name="dob"
-                    placeholder="Date of Birth"
+                    name="startDate"
+                    placeholder="Start Date"
+                    value={form.startDate}
+                    onChange={handleChange}
                   ></input>
                 </div>
                 <div className="col">
@@ -187,9 +233,37 @@ function RegistrationForm() {
                   <input
                     className="form-control"
                     type="date"
-                    name="dob"
-                    placeholder="Date of Birth"
+                    name="endDate"
+                    placeholder="End Date"
+                    value={form.endDate}
+                    onChange={handleChange}
                   ></input>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <label>Manager Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Manager name"
+                      name="manager"
+                      value={form.manager}
+                      onChange={handleChange}
+                    ></input>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <label>SME Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="SME name"
+                      name="sme"
+                      value={form.sme}
+                      onChange={handleChange}
+                    ></input>
+                  </div>
                 </div>
               </div>
             </form>
@@ -199,7 +273,9 @@ function RegistrationForm() {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary">Submit</Button>
+          <Button variant="primary" onClick={handleSubmit}>
+            Submit
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
