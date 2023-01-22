@@ -1,0 +1,12 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = true
+	symlinks = false
+	ignorecase = true
+	sharedrepository = 2
+[receive]
+	denyNonFastforwards = true
+[remote "ResourceManagerComponent"]
+	url = https://github.com/rperugu66/ResourceManagerComponent.git
+	fetch = +refs/heads/*:refs/remotes/ResourceManagerComponent/*
