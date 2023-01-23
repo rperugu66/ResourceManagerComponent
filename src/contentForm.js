@@ -36,7 +36,9 @@ function RegistrationForm() {
         <td>{user.sme}</td>
         <td>{user.smeStatus}</td>
         <td>
-          <button className="btnEdit">Edit </button>
+          <button className="btnEdit" onClick={() => handleEditFrom(user.id)}>
+            Edit{" "}
+          </button>
           <span></span>
           <button className="date-block">Delete</button>
         </td>
@@ -48,6 +50,7 @@ function RegistrationForm() {
     axios.get(variables.API_URL + "Assign").then((response) => {
       setPost(response.data);
       console.log(response.data);
+      console.log("post data", post);
     });
   };
 
@@ -57,7 +60,9 @@ function RegistrationForm() {
       .get(variables.API_URL + "ProgramTracker/GetTechTracks")
       .then((response) => {
         console.log("Tracks", response.data);
-        setTechTracks(response.data);
+        var responsedata = response.data;
+        responsedata.unshift("---Select Tech Track---");
+        setTechTracks(responsedata);
       })
       .then((json) => {
         console.log("Data Tracks", json);
@@ -119,6 +124,42 @@ function RegistrationForm() {
   // React.useEffect(() => {
   //   console.log("form data updated", form);
   // }, [form]);
+
+  // All Code Related to Edit Form
+  const editState = {
+    vamid: 0,
+    techTrack: "",
+    resourceName: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    manager: "",
+    sme: "",
+  };
+  const [editForm, setEditForm] = useState(editState);
+  const [showEdit, setShowEdit] = useState(false);
+  //Intial Object of From
+
+  const GetUserDataById = (id) => {
+    var url = variables.API_URL + `Assign/${id}`;
+    axios
+      .get(variables.API_URL + `Assign/${id}`)
+      .then((response) => {
+        setEditForm(response.data);
+        console.log("UserById", response.data);
+      })
+      .then((json) => {
+        console.log("Error In Getting Selected User Data", json);
+      });
+  };
+
+  const handleEditFrom = (id) => {
+    GetUserDataById(id);
+    setShowEdit(true);
+  };
+
+  const handleCloseEdit = () => {
+    setShowEdit(false);
+  };
 
   return (
     <>
@@ -271,6 +312,130 @@ function RegistrationForm() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Edit Model */}
+      <Modal
+        show={showEdit}
+        onHide={handleCloseEdit}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Form</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <form>
+              <div className="row">
+                <div className="col">
+                  <label>VAM ID</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder=""
+                    name="vamid"
+                    value={editForm.vamid}
+                    onChange={handleEditFrom}
+                  ></input>
+                </div>
+                <div className="col">
+                  <div className="col">
+                    <label>Tech Track</label>
+                    <select
+                      className="form-control"
+                      id="inlineFormCustomSelectPref"
+                      name="techTrack"
+                      value={editForm.techTrack}
+                      onChange={handleEditFrom}
+                      //defaultValue="----Select----"
+                      // options={getTechTracksLists}
+                    >
+                      {techTracks.map((e, key) => {
+                        return (
+                          <option key={key} value={e}>
+                            {e}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Last name"
+                    name="resourceName"
+                    value={editForm.resourceName}
+                    onChange={handleEditFrom}
+                  ></input>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <label>Select Date</label>
+                  <input
+                    className="form-control"
+                    type="date"
+                    name="startDate"
+                    placeholder="Start Date"
+                    value={editForm.startDate}
+                    onChange={handleEditFrom}
+                  ></input>
+                </div>
+                <div className="col">
+                  <label>End Date</label>
+                  <input
+                    className="form-control"
+                    type="date"
+                    name="endDate"
+                    placeholder="End Date"
+                    value={editForm.endDate} 
+                    onChange={handleEditFrom}
+                  ></input>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <label>Manager Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Manager name"
+                      name="manager"
+                      value={editForm.manager}
+                      onChange={handleEditFrom}
+                    ></input>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <label>SME Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="SME name"
+                      name="sme"
+                      value={editForm.sme}
+                      onChange={handleEditFrom}
+                    ></input>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEdit}>
             Close
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
