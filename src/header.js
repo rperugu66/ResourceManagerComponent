@@ -20,16 +20,18 @@ function Header() {
           </div>
         </div>
 
-        <div className="itemField Notificationdiv image">
-          <img
+        {
+          <div className="itemField Notificationdiv image">
+            {/* <img
             className="imagedev"
             src={require("./assets/images/bell-img.png")}
             alt="test"
           />
           <a href="{{ url('/image/'.$image->id.'/delete') }}">
             <button type="button" className="btnNotification"></button>
-          </a>
-        </div>
+          </a> */}
+          </div>
+        }
 
         <div className="user-info-block">
           <div className="user-avathar">

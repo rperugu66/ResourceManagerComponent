@@ -9,6 +9,7 @@ import { variables } from "./Variables";
 
 function RegistrationForm() {
   const [show, setShow] = useState(false);
+  RegistrationForm;
   const intialState = {
     vamid: 0,
     techTrack: "",
@@ -26,7 +27,7 @@ function RegistrationForm() {
 
   const listItems = post.map((user) => {
     return (
-      <tr className="Header">
+      <tr>
         <td>{user.vamid}</td>
         <td>{user.resourceName}</td>
         <td>{user.techTrack}</td>
@@ -36,9 +37,7 @@ function RegistrationForm() {
         <td>{user.sme}</td>
         <td>{user.smeStatus}</td>
         <td>
-          <button className="btnEdit" onClick={() => handleEditFrom(user.id)}>
-            Edit{" "}
-          </button>
+          <button className="btnEdit">Edit </button>
           <span></span>
           <button className="date-block">Delete</button>
         </td>
@@ -50,7 +49,6 @@ function RegistrationForm() {
     axios.get(variables.API_URL + "Assign").then((response) => {
       setPost(response.data);
       console.log(response.data);
-      console.log("post data", post);
     });
   };
 
@@ -60,9 +58,7 @@ function RegistrationForm() {
       .get(variables.API_URL + "ProgramTracker/GetTechTracks")
       .then((response) => {
         console.log("Tracks", response.data);
-        var responsedata = response.data;
-        responsedata.unshift("---Select Tech Track---");
-        setTechTracks(responsedata);
+        setTechTracks(response.data);
       })
       .then((json) => {
         console.log("Data Tracks", json);
@@ -125,73 +121,6 @@ function RegistrationForm() {
   //   console.log("form data updated", form);
   // }, [form]);
 
-  // All Code Related to Edit Form
-  const editState = {
-    vamid: 0,
-    techTrack: "",
-    resourceName: "",
-    startDate: new Date(),
-    endDate: new Date(),
-    manager: "",
-    sme: "",
-  };
-  const [editForm, setEditForm] = useState(editState);
-  const [showEdit, setShowEdit] = useState(false);
-  //Intial Object of From
-
-  const GetUserDataById = (id) => {
-    var url = variables.API_URL + `Assign/${id}`;
-    axios
-      .get(variables.API_URL + `Assign/${id}`)
-      .then((response) => {
-        setEditForm(response.data);
-        console.log("UserById", response.data);
-      })
-      .then((json) => {
-        console.log("Error In Getting Selected User Data", json);
-      });
-  };
-
-  const handleEditSubmit = () => {
-    console.log("editform", editForm);
-    updateResource();
-  };
-
-  const handleEditFrom = (id) => {
-    GetUserDataById(id);
-    setShowEdit(true);
-  };
-
-  const handleCloseEdit = () => {
-    setShowEdit(false);
-  };
-
-  const handleEditFromChange = (evt) => {
-    const name = evt.target.name;
-    const value =
-      evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
-    setEditForm({
-      ...editForm,
-      [name]: value,
-    });
-  };
-
-  const updateResource = () => {
-    var url = variables.API_URL + `Assign/${editForm.id}`;
-    axios
-      .put(url, editForm, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((resp) => {
-        console.log(resp.data);
-        GetResourceData();
-        handleCloseEdit(true);
-      })
-      .then((error) => console.log("error", error));
-  };
-
   return (
     <>
       <body>
@@ -209,7 +138,7 @@ function RegistrationForm() {
             <div className="table">
               <table>
                 <thead>
-                  <tr>
+                  <tr className="Header">
                     <td>VAM ID</td>
                     <td>Resource Name</td>
                     <td>Tech Track</td>
@@ -261,7 +190,7 @@ function RegistrationForm() {
                       name="techTrack"
                       value={form.techTrack}
                       onChange={handleChange}
-                      //defaultValue="----Select----"
+                      // defaultValue="----Select----"
                       // options={getTechTracksLists}
                     >
                       {techTracks.map((e, key) => {
@@ -346,130 +275,6 @@ function RegistrationForm() {
             Close
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Edit Model */}
-      <Modal
-        show={showEdit}
-        onHide={handleCloseEdit}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Form</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <form>
-              <div className="row">
-                <div className="col">
-                  <label>VAM ID</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder=""
-                    name="vamid"
-                    value={editForm.vamid}
-                    onChange={handleEditFromChange}
-                  ></input>
-                </div>
-                <div className="col">
-                  <div className="col">
-                    <label>Tech Track</label>
-                    <select
-                      className="form-control"
-                      id="inlineFormCustomSelectPref"
-                      name="techTrack"
-                      value={editForm.techTrack}
-                      onChange={handleEditFromChange}
-                      //defaultValue="----Select----"
-                      // options={getTechTracksLists}
-                    >
-                      {techTracks.map((e, key) => {
-                        return (
-                          <option key={key} value={e}>
-                            {e}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col">
-                  <label>Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Last name"
-                    name="resourceName"
-                    value={editForm.resourceName}
-                    onChange={handleEditFromChange}
-                  ></input>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col">
-                  <label>Select Date</label>
-                  <input
-                    className="form-control"
-                    type="date"
-                    name="startDate"
-                    placeholder="Start Date"
-                    value={JSON.stringify(editForm.startDate).slice(1, 11)}
-                    onChange={handleEditFromChange}
-                  ></input>
-                </div>
-                <div className="col">
-                  <label>End Date</label>
-                  <input
-                    className="form-control"
-                    type="date"
-                    name="endDate"
-                    placeholder="End Date"
-                    value={JSON.stringify(editForm.endDate).slice(1, 11)}
-                    onChange={handleEditFromChange}
-                  ></input>
-                </div>
-                <div className="row">
-                  <div className="col">
-                    <label>Manager Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Manager name"
-                      name="manager"
-                      value={editForm.manager}
-                      onChange={handleEditFromChange}
-                    ></input>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col">
-                    <label>SME Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="SME name"
-                      name="sme"
-                      value={editForm.sme}
-                      onChange={handleEditFromChange}
-                    ></input>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEdit}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleEditSubmit}>
             Submit
           </Button>
         </Modal.Footer>
