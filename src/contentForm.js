@@ -19,11 +19,19 @@ function RegistrationForm() {
     sme: "",
   };
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+    setShowError(false);
+    setErrorMessage("");
+  };
   const [post, setPost] = React.useState([]);
   const [form, setForm] = useState(intialState);
   const [techTracks, setTechTracks] = useState([]);
-
+  // show and hide error and succesfull message
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccesMessage] = useState("");
   const listItems = post.map((user) => {
     return (
       <tr className="Header">
@@ -40,7 +48,12 @@ function RegistrationForm() {
             Edit{" "}
           </button>
           <span></span>
-          <button className="date-block">Delete</button>
+          <button
+            className="date-block"
+            onClick={() => handleDeleteItem(user.id)}
+          >
+            Delete
+          </button>
         </td>
       </tr>
     );
@@ -61,11 +74,15 @@ function RegistrationForm() {
       .then((response) => {
         console.log("Tracks", response.data);
         var responsedata = response.data;
-        responsedata.unshift("---Select Tech Track---");
+        var selectobject = {
+          id: 0,
+          techTrack: "Select TechTrack",
+        };
+        responsedata.unshift(selectobject);
         setTechTracks(responsedata);
       })
-      .then((json) => {
-        console.log("Data Tracks", json);
+      .catch((error) => {
+        console.log("Data Tracks error", error);
         //setTechTracks((data) => setTechTracks(data));
       });
   };
@@ -103,6 +120,8 @@ function RegistrationForm() {
   const handleClose = () => {
     setForm(intialState);
     setShow(false);
+    setShowError(false);
+    setErrorMessage("");
   };
 
   const CreateResource = (resource) => {
@@ -119,7 +138,11 @@ function RegistrationForm() {
         //Close Model
         handleClose();
       })
-      .then((error) => console.log("Post Error", error));
+      .catch((error) => {
+        console.log("Post Error", error);
+        setShowError(true);
+        setErrorMessage("Unable to Submit your Request");
+      });
   };
   // React.useEffect(() => {
   //   console.log("form data updated", form);
@@ -147,8 +170,8 @@ function RegistrationForm() {
         setEditForm(response.data);
         console.log("UserById", response.data);
       })
-      .then((json) => {
-        console.log("Error In Getting Selected User Data", json);
+      .catch((error) => {
+        console.log("Error In Getting Selected User Data", error);
       });
   };
 
@@ -162,8 +185,26 @@ function RegistrationForm() {
     setShowEdit(true);
   };
 
+  const handleDeleteItem = (id) => {
+    DeleteResourceById(id);
+    //Update List
+  };
+
   const handleCloseEdit = () => {
     setShowEdit(false);
+  };
+
+  const DeleteResourceById = (id) => {
+    var url = variables.API_URL + `Assign/${id}`;
+    axios
+      .delete(variables.API_URL + `Assign/${id}`)
+      .then((response) => {
+        console.log("User Deleted ", response.data);
+        GetResourceData();
+      })
+      .catch((error) => {
+        console.log("Error In Removing the User", error);
+      });
   };
 
   const handleEditFromChange = (evt) => {
@@ -189,7 +230,7 @@ function RegistrationForm() {
         GetResourceData();
         handleCloseEdit(true);
       })
-      .then((error) => console.log("error", error));
+      .catch((error) => console.log("error", error));
   };
 
   return (
@@ -264,10 +305,10 @@ function RegistrationForm() {
                       //defaultValue="----Select----"
                       // options={getTechTracksLists}
                     >
-                      {techTracks.map((e, key) => {
+                      {techTracks.map((item) => {
                         return (
-                          <option key={key} value={e}>
-                            {e}
+                          <option key={item.Id} value={item.techTrack}>
+                            {item.techTrack}
                           </option>
                         );
                       })}
@@ -296,7 +337,7 @@ function RegistrationForm() {
                     type="date"
                     name="startDate"
                     placeholder="Start Date"
-                    value={form.startDate}
+                    value={JSON.stringify(form.startDate).slice(1, 11)}
                     onChange={handleChange}
                   ></input>
                 </div>
@@ -307,35 +348,47 @@ function RegistrationForm() {
                     type="date"
                     name="endDate"
                     placeholder="End Date"
-                    value={form.endDate}
+                    value={JSON.stringify(form.endDate).slice(1, 11)}
                     onChange={handleChange}
                   ></input>
                 </div>
-                <div className="row">
-                  <div className="col">
-                    <label>Manager Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Manager name"
-                      name="manager"
-                      value={form.manager}
-                      onChange={handleChange}
-                    ></input>
-                  </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <label>Manager Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Manager name"
+                    name="manager"
+                    value={form.manager}
+                    onChange={handleChange}
+                  ></input>
                 </div>
-                <div className="row">
-                  <div className="col">
-                    <label>SME Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="SME name"
-                      name="sme"
-                      value={form.sme}
-                      onChange={handleChange}
-                    ></input>
-                  </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <label>SME Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="SME name"
+                    name="sme"
+                    value={form.sme}
+                    onChange={handleChange}
+                  ></input>
+                </div>
+              </div>
+              <div className="row">
+                <div className="h-25 col">
+                  {showError && (
+                    <>
+                      <label> </label>
+                      <div className="h-25 alert alert-danger">
+                        {errorMessage}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </form>
@@ -388,10 +441,10 @@ function RegistrationForm() {
                       //defaultValue="----Select----"
                       // options={getTechTracksLists}
                     >
-                      {techTracks.map((e, key) => {
+                      {techTracks.map((item) => {
                         return (
-                          <option key={key} value={e}>
-                            {e}
+                          <option key={item.id} value={item.techTrack}>
+                            {item.techTrack}
                           </option>
                         );
                       })}
