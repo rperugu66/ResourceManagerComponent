@@ -13,6 +13,7 @@ function RegistrationForm() {
     vamid: 0,
     techTrack: "",
     resourceName: "",
+    email: "",
     startDate: new Date(),
     endDate: new Date(),
     manager: "",
@@ -147,12 +148,30 @@ function RegistrationForm() {
   // React.useEffect(() => {
   //   console.log("form data updated", form);
   // }, [form]);
+  // Get User Data By VAMId
+  const handleUserId = (vamid) => {
+    var url = variables.API_URL + `UserInfo/${vamid}`;
+    axios
+      .get(variables.API_URL + `UserInfo/${vamid}`)
+      .then((response) => {
+        console.log("UserByVAMId", response.data);
+        setForm({
+          ...form,
+          ["resourceName"]: response.data.name,
+          ["email"]: response.data.email,
+        });
+      })
+      .catch((error) => {
+        console.log("Error In Getting Selected User Data", error);
+      });
+  };
 
   // All Code Related to Edit Form
   const editState = {
     vamid: 0,
     techTrack: "",
     resourceName: "",
+    email: "",
     startDate: new Date(),
     endDate: new Date(),
     manager: "",
@@ -175,6 +194,22 @@ function RegistrationForm() {
       });
   };
 
+  const handleEditUserId = (vamid) => {
+    var url = variables.API_URL + `UserInfo/${vamid}`;
+    axios
+      .get(variables.API_URL + `UserInfo/${vamid}`)
+      .then((response) => {
+        console.log("UserByVAMId", response.data);
+        setEditForm({
+          ...editForm,
+          ["resourceName"]: response.data.name,
+          ["email"]: response.data.email,
+        });
+      })
+      .catch((error) => {
+        console.log("Error In Getting Selected User Data", error);
+      });
+  };
   const handleEditSubmit = () => {
     console.log("editform", editForm);
     updateResource();
@@ -253,6 +288,7 @@ function RegistrationForm() {
                   <tr>
                     <td>VAM ID</td>
                     <td>Resource Name</td>
+
                     <td>Tech Track</td>
                     <td>Start Date</td>
                     <td>End Date</td>
@@ -291,6 +327,7 @@ function RegistrationForm() {
                     name="vamid"
                     value={form.vamid}
                     onChange={handleChange}
+                    onBlur={() => handleUserId(form.vamid)}
                   ></input>
                 </div>
                 <div className="col">
@@ -325,6 +362,19 @@ function RegistrationForm() {
                     placeholder="Last name"
                     name="resourceName"
                     value={form.resourceName}
+                    onChange={handleChange}
+                  ></input>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <label>E-Mail</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="E-mail"
+                    name="email"
+                    value={form.email}
                     onChange={handleChange}
                   ></input>
                 </div>
@@ -427,6 +477,7 @@ function RegistrationForm() {
                     name="vamid"
                     value={editForm.vamid}
                     onChange={handleEditFromChange}
+                    onBlur={() => handleEditUserId(editForm.vamid)}
                   ></input>
                 </div>
                 <div className="col">
@@ -461,6 +512,19 @@ function RegistrationForm() {
                     placeholder="Last name"
                     name="resourceName"
                     value={editForm.resourceName}
+                    onChange={handleEditFromChange}
+                  ></input>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <label>E-Mail</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="E-mail"
+                    name="email"
+                    value={editForm.email}
                     onChange={handleEditFromChange}
                   ></input>
                 </div>
